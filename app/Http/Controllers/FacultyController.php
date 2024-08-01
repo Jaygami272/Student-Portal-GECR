@@ -38,22 +38,23 @@ class FacultyController extends Controller
         $request->validate([
             // 'name'=>'required|unique:faculties,name',
         ]);
-       $uemail=User::where('email',$request['email'])->get();
+       
+        $uemail=User::where('email',$request['email'])->first();
         $string = Str::random(8);
         $role=Role::where('slug','faculty')->first();
        $d_id=Auth::user()->department_id;
        $user=new User();
        $faculty=new Faculty();
-    if(empty($uemail)){
+    
+   if($request['email']!=$uemail->email){
        $user->name=$request['name'];
        $user->email=$request['email'];
        $user->password=Hash::make($string);
        $user->role_id=$role->id;
        $user->department_id= $d_id;
        $user->save();
-        }
-       $u=User::find($request['email']);
-       return $u;
+   }
+       $u=User::where('email',$request['email'])->first();
        $faculty->name=$request['name'];
        $faculty->phone_no=$request['phone_no'];
        $faculty->depart_id= $d_id;
